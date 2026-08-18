@@ -1,7 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "aidisclose-generator",
-  "compatibility_date": "2026-06-21",
+  "compatibility_date": "2026-08-18",
   "observability": {
     "enabled": true
   },
