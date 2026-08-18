@@ -6,8 +6,11 @@ a single total in Cloudflare KV and exposes:
 - `GET  /` → `{ "count": <n> }` — read the total (used on page load)
 - `POST /` → `{ "count": <n+1> }` — increment (used when a document is generated)
 
-It includes a per-IP rate limit (one counted increment per IP per 60 s) so the
-total can't be trivially inflated.
+`POST` is accepted only from the origins in `ALLOWED_ORIGINS`, checked *before*
+KV is touched — a CORS header alone would only hide the response from the
+caller, leaving the write in place. On top of that a per-IP rate limit allows
+one counted increment per IP per 60 s. The IP is stored as a truncated SHA-256
+digest, not in the clear.
 
 ## Prerequisites
 
@@ -51,8 +54,9 @@ counter read as 0 in Firefox.
 1. In `../index.html`, set `COUNTER_URL` to your deployed Worker URL (keep the
    trailing slash).
 2. In `worker.js`, confirm `ALLOWED_ORIGINS` lists your site origin(s)
-   (`https://aidisclose.org`). Add `http://localhost:...` while testing, then
-   redeploy.
+   (`https://aidisclose.org`). This list now gates `POST`, not just the CORS
+   header, so a local page will get `403 origin not allowed` until you add
+   `http://localhost:...` to it and redeploy.
 
 ## Notes / tuning
 
@@ -64,8 +68,15 @@ counter read as 0 in Firefox.
 
 - **Reset** the same way with a different value.
 - **Rate-limit window**: change `RATE_WINDOW` in `worker.js` (seconds per IP).
-- **Free tier**: KV allows ~100k reads + 1k writes/day on the free plan — far
-  more than this counter needs.
+- **Free tier**: KV allows ~100k reads + 1k writes/day on the free plan. Note
+  that each counted increment costs *two* writes (`count` and the rate-limit
+  key), so the real ceiling is ~500 increments/day. The `GET` path passes
+  `cacheTtl`, so repeat page loads are served from the edge cache instead of
+  spending a KV read.
+- **Accuracy**: the increment is a read-then-write against an eventually
+  consistent store, so it is not atomic — simultaneous generates can collapse
+  into a single increment. Fine for a vanity total; move the state into a
+  Durable Object if the number ever has to be exact.
 - The `GET` on page load only reads; only the four generate/Overleaf actions
   `POST`. If you'd rather count unique browsers, add a `localStorage` guard in
   `incrementGlobalCounter()` so each browser POSTs at most once.

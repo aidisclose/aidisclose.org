@@ -4,6 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AIDisclose Statement Generator</title>
+    <meta name="description" content="Free generator for Generative AI disclosure statements in LaTeX. Pick the tasks you delegated to AI and get ready-to-compile code for the aidisclose package.">
+    <link rel="canonical" href="https://aidisclose.org/">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <meta name="theme-color" content="#f4f6f9" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0e0e0e" media="(prefers-color-scheme: dark)">
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIdisclose">
+    <meta property="og:url" content="https://aidisclose.org/">
+    <meta property="og:title" content="Generative AI Disclosure Generator">
+    <meta property="og:description" content="Pick the tasks you delegated to AI and get ready-to-compile LaTeX for the aidisclose package.">
+    <meta property="og:image" content="https://aidisclose.org/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Generative AI Disclosure Generator — aidisclose.org">
+    <meta name="twitter:card" content="summary_large_image">
     <script>
         // Decide light/dark before first paint (avoids a flash of the wrong mode):
         //   stored preference  >  OS preference  >  local time (dark ~after sunset..sunrise)
@@ -22,10 +38,8 @@
             root.setAttribute('data-mode', preferred());
         })();
     </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-
+    <link rel="preload" href="fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="css/fonts.css">
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/theme-minimal.css">
 </head>
@@ -36,13 +50,13 @@
     <div class="toolbar">
         <span class="brand">AI<span>disclose</span></span>
         <span class="spacer"></span>
-        <span class="mode-toggle" onclick="toggleMode()"><span id="mode-icon">🌙</span> <span id="mode-label">Dark</span></span>
+        <button type="button" class="mode-toggle" onclick="toggleMode()" aria-pressed="false"><span id="mode-icon" aria-hidden="true">🌙</span> <span id="mode-label">Dark</span></button>
     </div>
 
     <header>
         <h1>Generative AI Disclosure Generator</h1>
         <p class="subtitle">
-            Generate compliant LaTeX code for the <a href="https://github.com/joaomlourenco/aidisclose" target="_blank" rel="noopener"><code>aidisclose</code></a> package (v1.12.0).
+            Generate compliant LaTeX code for the <a href="https://github.com/joaomlourenco/aidisclose" target="_blank" rel="noopener"><code>aidisclose</code></a> package (v1.13.0).
         </p>
     </header>
 
@@ -51,7 +65,7 @@
         <div class="form-grid">
             <div>
                 <label for="authors">Authors *</label>
-                <input type="text" id="authors" placeholder="e.g. Jane Doe, John Smith" required>
+                <input type="text" id="authors" placeholder="e.g. Jane Doe, John Smith" required aria-required="true">
                 <span class="help-text">Full names of authors accepting responsibility.</span>
             </div>
             <div>
@@ -120,8 +134,14 @@
                 <input type="text" id="title-full" placeholder="Default: Generative AI Disclosure">
 
                 <div class="row" style="margin-top:10px; gap:10px;">
-                    <input type="text" id="title-short" placeholder="Short Title (TOC)">
-                    <input type="text" id="title-level" placeholder="\section, \chapter...">
+                    <div>
+                        <label for="title-short">Short Title (TOC)</label>
+                        <input type="text" id="title-short" placeholder="Short Title (TOC)">
+                    </div>
+                    <div>
+                        <label for="title-level">Heading Level</label>
+                        <input type="text" id="title-level" placeholder="\section, \chapter...">
+                    </div>
                 </div>
 
                 <label for="render-label" style="margin-top: 15px;">LaTeX Label</label>
@@ -246,7 +266,8 @@
         </div>
     </div>
 
-    <div id="output-area">
+    <div id="output-area" role="region" aria-label="Generated LaTeX source" tabindex="-1">
+        <p id="output-status" class="visually-hidden" role="status" aria-live="polite"></p>
         <div class="code-container">
             <div class="code-header">
                 <span>LaTeX Source</span>
@@ -278,8 +299,10 @@
         function syncLabel(m) {
             const icon = document.getElementById('mode-icon');
             const label = document.getElementById('mode-label');
+            const btn = document.querySelector('.mode-toggle');
             if (icon) icon.textContent = m === 'dark' ? '☀' : '🌙';
             if (label) label.textContent = m === 'dark' ? 'Light' : 'Dark';
+            if (btn) btn.setAttribute('aria-pressed', m === 'dark' ? 'true' : 'false');
         }
         function setMode(m, silent) {
             root.setAttribute('data-mode', m);
@@ -302,11 +325,19 @@
     })();
 
     // --- Utils ---
+    // Escapes every LaTeX special character in one pass. A single pass matters:
+    // chained .replace() calls would re-escape the backslashes and braces that
+    // earlier rules introduce (e.g. "Jo\~ao" became "Jo\\textasciitilde{}ao",
+    // a forced line break followed by literal text).
+    const LATEX_ESCAPES = {
+        "\\": "\\textbackslash{}",
+        "&": "\\&", "%": "\\%", "$": "\\$", "#": "\\#", "_": "\\_",
+        "{": "\\{", "}": "\\}",
+        "~": "\\textasciitilde{}", "^": "\\textasciicircum{}",
+    };
     function escapeLatex(str) {
         if (!str) return "";
-        return str.replace(/([&%$#_{}])/g, "\\$1")
-                  .replace(/~/g, "\\textasciitilde{}")
-                  .replace(/\^/g, "\\textasciicircum{}");
+        return str.replace(/[\\&%$#_{}~^]/g, c => LATEX_ESCAPES[c]);
     }
 
     // --- Comment Box Logic ---
@@ -319,7 +350,7 @@
         div.id = `comment-box-${commentCount}`;
         div.innerHTML = `
             <div class="comment-header">
-                <span class="comment-title">Comment #${commentCount}</span>
+                <span class="comment-title">Comment #${commentCount}</span><!-- renumbered on add/remove -->
                 <div class="checkbox-wrapper">
                     <input type="checkbox" id="comment-star-${commentCount}">
                     <span style="font-size:0.85rem">Unnumbered</span>
@@ -331,10 +362,20 @@
             </div>
         `;
         container.appendChild(div);
+        renumberComments();
     }
     function removeCommentBox(id) {
         const box = document.getElementById(`comment-box-${id}`);
         if(box) box.remove();
+        renumberComments();
+    }
+    // Element ids must stay unique, so they keep climbing; only the visible
+    // label is re-derived, otherwise removing #2 left "#1, #3, #4" on screen.
+    function renumberComments() {
+        document.querySelectorAll('#comments-container .comment-box').forEach((box, i) => {
+            const title = box.querySelector('.comment-title');
+            if (title) title.textContent = `Comment #${i + 1}`;
+        });
     }
 
     // --- LaTeX Generation Logic ---
@@ -352,10 +393,17 @@
         const titleLevel = document.getElementById('title-level').value.trim();
 
         // Rendering
-        const columns = document.getElementById('render-cols').value || 3;
+        // The input's min/max never fires (no <form> => no constraint validation),
+        // and ncols=99 makes multicol abort with "Too many columns".
+        const cols = parseInt(document.getElementById('render-cols').value, 10);
+        const columns = Number.isFinite(cols) ? Math.min(6, Math.max(1, cols)) : 3;
         const renderStar = document.getElementById('render-star').checked;
         const renderLang = document.getElementById('render-lang').value;
-        const renderLabel = escapeLatex(document.getElementById('render-label').value.trim());
+        // A label is a key, not text: escaping it would corrupt \ref lookups
+        // (sec:aid_declaration -> sec:aid\_declaration). Keep only the characters
+        // that are safe unescaped inside a key=value optional argument.
+        const renderLabel = document.getElementById('render-label').value.trim()
+                              .replace(/[^A-Za-z0-9:_.\-]/g, '');
 
         // Comments
         const comments = [];
@@ -446,7 +494,7 @@
 
         // Build options list for new key-value syntax
         let opts = [];
-        if (data.columns && data.columns != 3) opts.push(`ncols=${data.columns}`);
+        if (data.columns !== 3) opts.push(`ncols=${data.columns}`);
 
         // Only add lang if it is NOT default
         if (data.renderLang && data.renderLang !== 'default') {
@@ -577,6 +625,11 @@
         const area = document.getElementById('output-area');
         area.style.display = 'block';
         area.scrollIntoView({behavior: "smooth"});
+        // Sighted users see the panel appear; announce it and move focus so
+        // keyboard and screen-reader users land on the result too.
+        const status = document.getElementById('output-status');
+        if (status) status.textContent = 'LaTeX source generated below.';
+        area.focus({preventScroll: true});
     }
 
     function copyToClipboard() {
@@ -604,7 +657,11 @@
             el.innerText = value;
             badge.title = `${value} statements generated`;
             // Hide the badge until we have a real, non-zero count.
-            badge.classList.toggle('counter-hidden', value == 0 || value === '...');
+            const hidden = value == 0 || value === '...';
+            badge.classList.toggle('counter-hidden', hidden);
+            // opacity alone leaves it in the accessibility tree, which made
+            // screen readers announce "0 statements generated" on every load.
+            badge.setAttribute('aria-hidden', hidden ? 'true' : 'false');
         }
     }
 

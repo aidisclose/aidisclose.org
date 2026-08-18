@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="AIdisclose">
+  <rect width="64" height="64" rx="14" fill="#45608f"/>
+  <text x="32" y="45" text-anchor="middle"
+        font-family="Inter, system-ui, -apple-system, Helvetica, Arial, sans-serif"
+        font-size="34" font-weight="800" letter-spacing="-1.5" fill="#ffffff">AI</text>
+</svg>

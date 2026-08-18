@@ -1,11 +1,17 @@
 /* ============================================================
    aidisclose generator — base layout & components.
-   All colours/decoration come from CSS variables defined in the
-   per-theme files (theme-glass.css, theme-saas.css, ...), scoped
-   by [data-theme="..."][data-mode="..."] on <html>.
+   All colours/decoration come from CSS variables defined in
+   theme-minimal.css, scoped by [data-theme][data-mode] on <html>.
+   The scoping is kept so a second theme can be dropped in without
+   touching this file.
    ============================================================ */
 
 * { box-sizing: border-box; }
+/* Visible to assistive tech only — used for status announcements. */
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0;
+}
 html, body { margin: 0; padding: 0; }
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
@@ -30,15 +36,9 @@ body {
 .toolbar .brand { font-weight: 700; letter-spacing: -.02em; color: var(--heading); }
 .toolbar .brand span { color: var(--accent-ink); }
 .toolbar .spacer { flex: 1; }
-.toolbar label { font-size: .8rem; font-weight: 600; color: var(--muted); }
-.toolbar select {
-  padding: 8px 12px; border-radius: 10px; font: inherit; font-size: .88rem;
-  background: var(--input-bg); color: var(--text); border: 1px solid var(--input-border);
-  cursor: pointer;
-}
 .mode-toggle {
   display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
-  padding: 8px 14px; border-radius: 999px; font-size: .85rem; font-weight: 600;
+  padding: 8px 14px; border-radius: 999px; font: inherit; font-size: .85rem; font-weight: 600;
   background: var(--accent-soft); color: var(--accent-ink); border: 1px solid var(--panel-border);
   transition: transform .15s ease;
 }
@@ -121,12 +121,17 @@ input:focus, textarea:focus, select:focus {
 button { padding: 12px 24px; border: 1px solid transparent; border-radius: var(--radius-sm); font: inherit; font-weight: 600; font-size: 1rem; cursor: pointer; transition: transform .15s ease, filter .2s ease, background-color .2s ease; }
 button a { color: inherit; text-decoration: none; }
 
-.button-group { display: flex; gap: 15px; margin-top: 20px; align-items: stretch; }
-.btn-cell { flex: 1; display: flex; flex-direction: column; }
+/* Grid, not flex: four equal cells that reflow to 2 and then 1 column. As a
+   nowrap flex row the four buttons needed 507px and overflowed a 375px phone,
+   pushing NOVAthesis and Overleaf off-screen. */
+.button-group { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; align-items: stretch; }
+.btn-cell { display: flex; flex-direction: column; min-width: 0; }
 .btn-cell > button {
-  width: 100%; box-sizing: border-box; height: 60px; padding: 8px 16px; line-height: 1.2;
+  width: 100%; box-sizing: border-box; min-height: 60px; padding: 8px 16px; line-height: 1.2;
   text-align: center; display: flex; align-items: center; justify-content: center;
 }
+@media (max-width: 760px) { .button-group { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 400px) { .button-group { grid-template-columns: 1fr; } }
 
 .btn-primary    { background: var(--b1-bg); color: var(--b1-fg); border-color: transparent; box-shadow: var(--b1-shadow); }
 .btn-secondary  { background: var(--b2-bg); color: var(--b2-fg); border-color: var(--b2-border); }
@@ -144,6 +149,8 @@ button a { color: inherit; text-decoration: none; }
 
 /* --- Output area --- */
 #output-area { display: none; margin-top: 40px; scroll-margin-top: 20px; }
+#output-area:focus { outline: none; }
+#output-area:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
 .code-container { background: var(--code-bg); border: 1px solid var(--code-border); border-radius: var(--radius-sm); position: relative; overflow: hidden; box-shadow: var(--panel-shadow); }
 .code-header { background: var(--code-head-bg); padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; color: var(--code-head-ink); font-size: .85rem; border-bottom: 1px solid var(--code-border); }
 .code-header button { background: rgba(255,255,255,.14); color: var(--code-head-ink); border: none; }
@@ -151,8 +158,8 @@ pre { margin: 0; padding: 20px; color: var(--code-ink); overflow-x: auto; font-f
 
 /* --- Footer --- */
 .footer-sponsor { margin-top: 50px; text-align: center; border-top: 1px solid var(--panel-border); padding-top: 30px; color: var(--muted); font-size: .9rem; }
-.counter-badge { background: var(--accent-soft); color: var(--accent-ink); padding: 5px 14px; border-radius: 999px; font-size: .8rem; font-weight: 600; display: inline-block; margin-bottom: 15px; transition: opacity .3s; }
-.counter-badge.counter-hidden { opacity: 0; }
+.counter-badge { background: var(--accent-soft); color: var(--accent-ink); padding: 5px 14px; border-radius: 999px; font-size: .8rem; font-weight: 600; display: inline-block; margin-bottom: 15px; transition: opacity .3s, visibility .3s; }
+.counter-badge.counter-hidden { opacity: 0; visibility: hidden; }
 .footer-sponsor a { color: var(--accent-ink); }
 .donate-btn {
   display: inline-block; margin-top: 10px; padding: 10px 20px; border-radius: var(--radius-sm);
