@@ -23,7 +23,7 @@ body {
   padding: 0 20px 60px;
   transition: background .35s ease, color .35s ease;
 }
-.container { max-width: 1000px; margin: 0 auto; }
+.container { max-width: 1000px; margin: 0 auto; counter-reset: section; }
 
 /* --- Theme toolbar --- */
 .toolbar {
@@ -33,7 +33,10 @@ body {
   background: var(--toolbar-bg); border-bottom: 1px solid var(--panel-border);
   backdrop-filter: var(--backdrop);
 }
-.toolbar .brand { font-weight: 700; letter-spacing: -.02em; color: var(--heading); }
+.toolbar .brand {
+  font-family: var(--font-display, inherit); font-weight: 700; font-size: 1.05rem;
+  letter-spacing: -.01em; color: var(--heading);
+}
 .toolbar .brand span { color: var(--accent-ink); }
 .toolbar .spacer { flex: 1; }
 .mode-toggle {
@@ -44,13 +47,26 @@ body {
 }
 .mode-toggle:hover { transform: translateY(-1px); }
 
-/* --- Header --- */
-header { text-align: center; margin-bottom: 36px; padding-top: 14px; }
+/* --- Masthead --- */
+header { text-align: center; margin-bottom: 48px; padding-top: 34px; }
 h1 {
-  font-weight: 800; letter-spacing: -.03em; margin: 0 0 12px;
-  font-size: clamp(1.8rem, 4vw, 2.6rem); color: var(--heading);
+  font-family: var(--font-display, inherit);
+  font-weight: 600; letter-spacing: -.015em; line-height: 1.1; margin: 0 auto 20px;
+  font-size: clamp(2.1rem, 5vw, 3.1rem); color: var(--heading); max-width: 18em;
+  text-wrap: balance;
 }
-.subtitle { color: var(--muted); font-size: 1.05rem; max-width: 600px; margin: 0 auto; }
+/* Rule under the masthead, thicker in the middle third — a printed-page device. */
+header::after {
+  content: ''; display: block; width: 84px; height: 2px; margin: 26px auto 0;
+  background: var(--accent); opacity: .8;
+}
+.subtitle {
+  color: var(--muted); font-size: 1.02rem; max-width: 46ch; margin: 0 auto;
+  line-height: 1.6; text-wrap: balance;
+}
+/* The inline <code> carries padding, which otherwise drags an ugly break
+   onto the line after it. */
+.subtitle code { white-space: nowrap; }
 .subtitle code {
   background: var(--accent-soft); color: var(--accent-ink);
   padding: 2px 6px; border-radius: 6px; font-size: .9em;
@@ -61,23 +77,40 @@ h1 {
 /* --- Cards & sections --- */
 .card {
   background: var(--panel); border: 1px solid var(--panel-border);
-  border-radius: var(--radius); padding: 34px 36px; margin-bottom: 32px;
+  border-radius: var(--radius); padding: 32px 36px 36px; margin-bottom: 28px;
   backdrop-filter: var(--backdrop); box-shadow: var(--panel-shadow);
 }
 h2 {
-  font-size: 1.2rem; font-weight: 700; margin: 0 0 20px; padding-bottom: 12px;
+  font-family: var(--font-display, inherit);
+  font-size: 1.42rem; font-weight: 600; letter-spacing: -.01em;
+  margin: 0 0 24px; padding-bottom: 14px;
   border-bottom: 1px solid var(--panel-border); color: var(--heading);
-  display: flex; align-items: center; gap: 10px;
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 14px;
 }
-h2::before { content: ''; width: 4px; height: 20px; border-radius: 2px; background: var(--accent-grad); }
+/* Roman numerals come from a CSS counter, so the sequence stays correct
+   however sections are reordered. */
+h2::before {
+  counter-increment: section;
+  content: counter(section, upper-roman);
+  font-family: var(--font-display, inherit);
+  font-size: .78em; font-weight: 400; font-variant-numeric: normal;
+  color: var(--accent); letter-spacing: .06em;
+  min-width: 2ch; text-align: right; flex: none;
+}
+/* Running count of selections, filled in by script. */
+.section-count {
+  margin-left: auto; font-family: 'Inter', system-ui, sans-serif;
+  font-size: .72rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--muted); flex: none;
+}
 
 /* --- Forms --- */
 .form-grid { display: grid; gap: 24px; }
 .row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
 @media (max-width: 600px) { .row { grid-template-columns: 1fr; } }
 
-label { display: block; font-weight: 600; margin-bottom: 6px; color: var(--text); font-size: .95rem; }
-.help-text { font-size: .85rem; color: var(--muted); margin-bottom: 6px; display: block; }
+label { display: block; font-weight: 600; margin-bottom: 7px; color: var(--text); font-size: .9rem; letter-spacing: .01em; }
+.help-text { font-size: .84rem; color: var(--muted); margin-bottom: 6px; display: block; line-height: 1.55; text-wrap: pretty; }
 
 input[type="text"], input[type="number"], textarea, select {
   width: 100%; padding: 11px 13px; border-radius: 10px; font: inherit; font-size: 1rem;
@@ -94,19 +127,103 @@ input:focus, textarea:focus, select:focus {
 .checkbox-wrapper input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer; }
 .checkbox-wrapper span { font-size: .95rem; color: var(--text); }
 
-/* --- Taxonomy grid --- */
-.masonry-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 22px; }
+/* --- Taxonomy --- */
+.masonry-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr)); gap: 20px; min-width: 0; }
 .taxonomy-card {
   background: var(--subpanel); border: 1px solid var(--subpanel-border);
-  border-radius: var(--radius-sm); padding: 18px 20px;
+  border-radius: var(--radius-sm); padding: 16px 18px 18px;
 }
 .taxonomy-card h3 {
-  margin: 0 0 12px; font-size: .8rem; text-transform: uppercase; letter-spacing: .05em;
-  color: var(--muted); font-weight: 700; border-bottom: 1px solid var(--panel-border); padding-bottom: 8px;
+  margin: 0 0 12px; font-size: .72rem; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--muted); font-weight: 700;
+  border-bottom: 1px solid var(--panel-border); padding-bottom: 9px;
+  display: flex; align-items: baseline; gap: 8px;
 }
+/* Per-category tally, filled in by script. Tabular figures stop it jittering. */
+.taxonomy-card h3 .tax-count {
+  margin-left: auto; font-weight: 600; letter-spacing: .04em;
+  font-variant-numeric: tabular-nums; color: var(--muted); opacity: .85;
+}
+.taxonomy-card h3 .tax-count[data-any="yes"] { color: var(--accent-ink); opacity: 1; }
+
+/* Fallback for engines without :has() — the original checkbox rows. */
 .tax-item { display: flex; align-items: flex-start; margin-bottom: 8px; font-size: .9rem; cursor: pointer; color: var(--text); }
 .tax-item:hover { color: var(--accent-ink); }
 .tax-item input { margin-top: 4px; margin-right: 8px; accent-color: var(--accent); }
+
+@supports selector(:has(*)) {
+  /* The card itself becomes the chip container; the heading spans the row.
+     Keeps the markup untouched — every chip is still a <label> wrapping a
+     real checkbox, so keyboard and screen-reader behaviour is unchanged. */
+  .taxonomy-card { display: flex; flex-wrap: wrap; gap: 7px; align-content: flex-start; }
+  .taxonomy-card h3 { flex: 0 0 100%; margin-bottom: 4px; }
+
+  .tax-item {
+    display: inline-flex; align-items: center; gap: 0; margin: 0;
+    padding: 6px 12px; font-size: .845rem; line-height: 1.25;
+    border: 1px solid var(--chip-border); border-radius: 999px;
+    background: var(--chip-bg); color: var(--chip-fg);
+    cursor: pointer; user-select: none;
+    transition: background-color .13s ease, border-color .13s ease, color .13s ease;
+  }
+  /* The native box is hidden but still focusable and still announced. */
+  .tax-item input {
+    position: absolute; width: 1px; height: 1px; margin: 0;
+    opacity: 0; pointer-events: none;
+  }
+  /* Checkmark slides in only when selected, so unselected chips stay compact. */
+  .tax-item::before {
+    content: '✓'; font-size: .78em; font-weight: 700; color: var(--chip-on-fg);
+    width: 0; opacity: 0; overflow: hidden;
+    transition: width .13s ease, opacity .13s ease, margin-right .13s ease;
+  }
+  .tax-item:hover { border-color: var(--accent); color: var(--accent-ink); }
+  .tax-item:has(input:checked) {
+    background: var(--chip-on-bg); border-color: var(--chip-on-border);
+    color: var(--chip-on-fg); font-weight: 600;
+  }
+  .tax-item:has(input:checked)::before { width: 1em; opacity: 1; margin-right: .38em; }
+  /* Focus has to live on the label, since the box it belongs to is hidden. */
+  .tax-item:has(input:focus-visible) {
+    outline: 2px solid var(--accent); outline-offset: 2px; border-color: var(--accent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tax-item, .tax-item::before { transition: none; }
+}
+
+/* --- Taxonomy tooltip ---
+   One shared element, positioned by script. Shown on hover and on keyboard
+   focus, stays put while the pointer is over it, and closes on Escape
+   (WCAG 1.4.13). The text itself lives in #tax-descriptions. */
+#tax-tip {
+  position: absolute; z-index: 200; max-width: 22rem; width: max-content;
+  padding: 11px 14px 12px; border-radius: var(--radius-sm);
+  background: var(--tip-bg); color: var(--tip-fg);
+  border: 1px solid var(--tip-border); box-shadow: var(--tip-shadow);
+  font-size: .82rem; line-height: 1.5; text-align: left;
+  opacity: 0; visibility: hidden; transform: translateY(2px);
+  transition: opacity .12s ease, transform .12s ease, visibility .12s;
+  pointer-events: none;
+}
+#tax-tip[data-open="yes"] { opacity: 1; visibility: visible; transform: translateY(0); pointer-events: auto; }
+#tax-tip .tip-name {
+  display: block; font-family: var(--font-display, inherit);
+  font-size: .95rem; font-weight: 600; line-height: 1.25;
+  color: var(--tip-name); margin-bottom: 5px;
+}
+#tax-tip .tip-key {
+  display: inline-block; margin-bottom: 7px;
+  font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .72rem;
+  color: var(--tip-key); letter-spacing: .02em;
+}
+/* Hint that a chip has more to say, without adding clutter. */
+.tax-item[aria-describedby], .tax-item:has(input[aria-describedby]) { cursor: help; }
+
+@media (prefers-reduced-motion: reduce) {
+  #tax-tip { transition: none; }
+}
 
 /* --- Dynamic comments --- */
 .comment-box {
@@ -132,6 +249,15 @@ button a { color: inherit; text-decoration: none; }
 }
 @media (max-width: 760px) { .button-group { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 400px) { .button-group { grid-template-columns: 1fr; } }
+@media (max-width: 600px) {
+  .card { padding: 24px 18px 26px; }
+  /* Give the heading the full width — sharing the line with the tally was
+     squeezing "Taxonomy of Delegated Tasks" down to one word per line. */
+  h2 { gap: 10px 12px; }
+  .section-count { flex-basis: 100%; margin-left: 0; order: 2; }
+  .taxonomy-card { padding: 14px 14px 16px; }
+  header { padding-top: 22px; margin-bottom: 36px; }
+}
 
 .btn-primary    { background: var(--b1-bg); color: var(--b1-fg); border-color: transparent; box-shadow: var(--b1-shadow); }
 .btn-secondary  { background: var(--b2-bg); color: var(--b2-fg); border-color: var(--b2-border); }
@@ -141,10 +267,19 @@ button a { color: inherit; text-decoration: none; }
 .btn-primary:hover, .btn-novathesis:hover, .btn-overleaf:hover { transform: translateY(-2px); filter: brightness(1.06); }
 .btn-secondary:hover { transform: translateY(-2px); border-color: var(--accent); }
 
+/* The primary action carries a touch more weight than the alternatives. */
+.btn-primary { font-weight: 700; letter-spacing: .005em; }
+/* Keyboard focus was relying on the UA ring, which all but vanishes on the
+   filled oxblood button. */
+button:focus-visible, .donate-btn:focus-visible, .mode-toggle:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 3px;
+}
+[data-theme="scholarly"] .btn-primary:focus-visible { outline-color: var(--heading); }
+
 .btn-danger { background: var(--danger-bg); color: var(--danger-fg); border-color: transparent; padding: 6px 12px; font-size: .8rem; }
 .btn-danger:hover { background: var(--danger-bg-hover); }
 
-.btn-caption { margin-top: 6px; font-size: .78rem; line-height: 1.3; color: var(--muted); text-align: center; }
+.btn-caption { margin-top: 9px; font-size: .76rem; line-height: 1.4; color: var(--muted); text-align: center; text-wrap: pretty; }
 .btn-caption a { color: var(--accent-ink); }
 
 /* --- Output area --- */
@@ -152,13 +287,23 @@ button a { color: inherit; text-decoration: none; }
 #output-area:focus { outline: none; }
 #output-area:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
 .code-container { background: var(--code-bg); border: 1px solid var(--code-border); border-radius: var(--radius-sm); position: relative; overflow: hidden; box-shadow: var(--panel-shadow); }
-.code-header { background: var(--code-head-bg); padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; color: var(--code-head-ink); font-size: .85rem; border-bottom: 1px solid var(--code-border); }
+.code-header { background: var(--code-head-bg); padding: 11px 16px; display: flex; justify-content: space-between; align-items: center; color: var(--code-head-ink); font-size: .85rem; border-bottom: 1px solid var(--code-border); }
+.code-header > span:first-child {
+  font-family: var(--font-display, inherit); font-size: .98rem; letter-spacing: .01em;
+}
 .code-header button { background: rgba(255,255,255,.14); color: var(--code-head-ink); border: none; }
 pre { margin: 0; padding: 20px; color: var(--code-ink); overflow-x: auto; font-family: 'JetBrains Mono', 'Consolas', monospace; white-space: pre-wrap; font-size: .9rem; line-height: 1.6; }
 
 /* --- Footer --- */
-.footer-sponsor { margin-top: 50px; text-align: center; border-top: 1px solid var(--panel-border); padding-top: 30px; color: var(--muted); font-size: .9rem; }
-.counter-badge { background: var(--accent-soft); color: var(--accent-ink); padding: 5px 14px; border-radius: 999px; font-size: .8rem; font-weight: 600; display: inline-block; margin-bottom: 15px; transition: opacity .3s, visibility .3s; }
+.footer-sponsor { margin-top: 64px; text-align: center; border-top: 1px solid var(--panel-border); padding-top: 34px; color: var(--muted); font-size: .9rem; }
+.footer-sponsor p { max-width: 34ch; margin: 0 auto; line-height: 1.7; }
+.counter-badge {
+  background: transparent; color: var(--muted); padding: 0 0 4px;
+  border-bottom: 1px solid var(--panel-border);
+  font-size: .72rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  display: inline-block; margin-bottom: 22px; transition: opacity .3s, visibility .3s;
+}
 .counter-badge.counter-hidden { opacity: 0; visibility: hidden; }
 .footer-sponsor a { color: var(--accent-ink); }
 .donate-btn {

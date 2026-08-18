@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="minimal" data-mode="light">
+<html lang="en" data-theme="scholarly" data-mode="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,7 +25,7 @@
         //   stored preference  >  OS preference  >  local time (dark ~after sunset..sunrise)
         (function() {
             var root = document.documentElement;
-            root.setAttribute('data-theme', 'minimal');
+            root.setAttribute('data-theme', 'scholarly');
             function preferred() {
                 try { var s = localStorage.getItem('aid_mode'); if (s) return s; } catch (e) {}
                 if (window.matchMedia) {
@@ -39,9 +39,10 @@
         })();
     </script>
     <link rel="preload" href="fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="fonts/literata-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="css/fonts.css">
     <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/theme-minimal.css">
+    <link rel="stylesheet" href="css/theme-scholarly.css">
 </head>
 <body>
 
@@ -158,92 +159,152 @@
 
             <div class="taxonomy-card">
                 <h3>Conceptualization</h3>
-                <label class="tax-item"><input type="checkbox" value="c:idea" class="tax-check"> Idea generation</label>
-                <label class="tax-item"><input type="checkbox" value="c:obj" class="tax-check"> Defining objectives</label>
-                <label class="tax-item"><input type="checkbox" value="c:rq" class="tax-check"> Research questions</label>
-                <label class="tax-item"><input type="checkbox" value="c:feas" class="tax-check"> Feasibility assessment</label>
-                <label class="tax-item"><input type="checkbox" value="c:pre" class="tax-check"> Hypothesis viability</label>
-                <label class="tax-item"><input type="checkbox" value="c:sim" class="tax-check"> Simulated debate</label>
+                <label class="tax-item"><input type="checkbox" value="c:idea" class="tax-check" aria-describedby="tip-c-idea"> Idea generation</label>
+                <label class="tax-item"><input type="checkbox" value="c:obj" class="tax-check" aria-describedby="tip-c-obj"> Defining objectives</label>
+                <label class="tax-item"><input type="checkbox" value="c:rq" class="tax-check" aria-describedby="tip-c-rq"> Research questions</label>
+                <label class="tax-item"><input type="checkbox" value="c:feas" class="tax-check" aria-describedby="tip-c-feas"> Feasibility assessment</label>
+                <label class="tax-item"><input type="checkbox" value="c:pre" class="tax-check" aria-describedby="tip-c-pre"> Hypothesis viability</label>
+                <label class="tax-item"><input type="checkbox" value="c:sim" class="tax-check" aria-describedby="tip-c-sim"> Simulated debate</label>
             </div>
 
             <div class="taxonomy-card">
                 <h3>Literature Review</h3>
-                <label class="tax-item"><input type="checkbox" value="l:srch" class="tax-check"> Search & Discovery</label>
-                <label class="tax-item"><input type="checkbox" value="l:sum" class="tax-check"> Summarization</label>
-                <label class="tax-item"><input type="checkbox" value="l:map" class="tax-check"> Concept Mapping</label>
-                <label class="tax-item"><input type="checkbox" value="l:pat" class="tax-check"> Patterns & Themes</label>
-                <label class="tax-item"><input type="checkbox" value="l:gaps" class="tax-check"> Identifying Gaps</label>
-                <label class="tax-item"><input type="checkbox" value="l:trans" class="tax-check"> Translation</label>
+                <label class="tax-item"><input type="checkbox" value="l:srch" class="tax-check" aria-describedby="tip-l-srch"> Search & Discovery</label>
+                <label class="tax-item"><input type="checkbox" value="l:sum" class="tax-check" aria-describedby="tip-l-sum"> Summarization</label>
+                <label class="tax-item"><input type="checkbox" value="l:map" class="tax-check" aria-describedby="tip-l-map"> Concept Mapping</label>
+                <label class="tax-item"><input type="checkbox" value="l:pat" class="tax-check" aria-describedby="tip-l-pat"> Patterns & Themes</label>
+                <label class="tax-item"><input type="checkbox" value="l:gaps" class="tax-check" aria-describedby="tip-l-gaps"> Identifying Gaps</label>
+                <label class="tax-item"><input type="checkbox" value="l:trans" class="tax-check" aria-describedby="tip-l-trans"> Translation</label>
             </div>
 
             <div class="taxonomy-card">
                 <h3>Methodology</h3>
-                <label class="tax-item"><input type="checkbox" value="m:des" class="tax-check"> Research Design</label>
-                <label class="tax-item"><input type="checkbox" value="m:proto" class="tax-check"> Prototyping</label>
-                <label class="tax-item"><input type="checkbox" value="m:meth" class="tax-check"> Validation</label>
+                <label class="tax-item"><input type="checkbox" value="m:des" class="tax-check" aria-describedby="tip-m-des"> Research Design</label>
+                <label class="tax-item"><input type="checkbox" value="m:proto" class="tax-check" aria-describedby="tip-m-proto"> Prototyping</label>
+                <label class="tax-item"><input type="checkbox" value="m:meth" class="tax-check" aria-describedby="tip-m-meth"> Method Selection</label>
             </div>
 
             <div class="taxonomy-card">
                 <h3>Software & Automation</h3>
-                <label class="tax-item"><input type="checkbox" value="s:gen" class="tax-check"> Code Generation</label>
-                <label class="tax-item"><input type="checkbox" value="s:opt" class="tax-check"> Optimization</label>
-                <label class="tax-item"><input type="checkbox" value="s:debug" class="tax-check"> Debugging</label>
-                <label class="tax-item"><input type="checkbox" value="s:auto" class="tax-check"> Scripts</label>
-                <label class="tax-item"><input type="checkbox" value="s:algs" class="tax-check"> Algorithms</label>
-                <label class="tax-item"><input type="checkbox" value="s:doc" class="tax-check"> Documentation</label>
+                <label class="tax-item"><input type="checkbox" value="s:gen" class="tax-check" aria-describedby="tip-s-gen"> Code Generation</label>
+                <label class="tax-item"><input type="checkbox" value="s:opt" class="tax-check" aria-describedby="tip-s-opt"> Optimization</label>
+                <label class="tax-item"><input type="checkbox" value="s:debug" class="tax-check" aria-describedby="tip-s-debug"> Debugging</label>
+                <label class="tax-item"><input type="checkbox" value="s:auto" class="tax-check" aria-describedby="tip-s-auto"> Process Automation</label>
+                <label class="tax-item"><input type="checkbox" value="s:algs" class="tax-check" aria-describedby="tip-s-algs"> Algorithms</label>
+                <label class="tax-item"><input type="checkbox" value="s:doc" class="tax-check" aria-describedby="tip-s-doc"> Documentation</label>
             </div>
 
             <div class="taxonomy-card">
                 <h3>Data Management</h3>
-                <label class="tax-item"><input type="checkbox" value="d:coll" class="tax-check"> Collection/Scraping</label>
-                <label class="tax-item"><input type="checkbox" value="d:val" class="tax-check"> Validation/Quality</label>
-                <label class="tax-item"><input type="checkbox" value="d:cln" class="tax-check"> Cleaning</label>
-                <label class="tax-item"><input type="checkbox" value="d:cur" class="tax-check"> Curation</label>
-                <label class="tax-item"><input type="checkbox" value="d:anl" class="tax-check"> Analysis</label>
-                <label class="tax-item"><input type="checkbox" value="d:viz" class="tax-check"> Visualization</label>
-                <label class="tax-item"><input type="checkbox" value="d:rep" class="tax-check"> Reporting Results</label>
-                <label class="tax-item"><input type="checkbox" value="d:lbl" class="tax-check"> Labeling</label>
-                <label class="tax-item"><input type="checkbox" value="d:syn" class="tax-check"> Synthetic Data</label>
-                <label class="tax-item"><input type="checkbox" value="d:anon" class="tax-check"> Anonymization</label>
-                <label class="tax-item"><input type="checkbox" value="d:trans" class="tax-check"> Translation</label>
+                <label class="tax-item"><input type="checkbox" value="d:coll" class="tax-check" aria-describedby="tip-d-coll"> Collection/Scraping</label>
+                <label class="tax-item"><input type="checkbox" value="d:val" class="tax-check" aria-describedby="tip-d-val"> Validation/Quality</label>
+                <label class="tax-item"><input type="checkbox" value="d:cln" class="tax-check" aria-describedby="tip-d-cln"> Cleaning</label>
+                <label class="tax-item"><input type="checkbox" value="d:cur" class="tax-check" aria-describedby="tip-d-cur"> Curation</label>
+                <label class="tax-item"><input type="checkbox" value="d:anl" class="tax-check" aria-describedby="tip-d-anl"> Analysis</label>
+                <label class="tax-item"><input type="checkbox" value="d:viz" class="tax-check" aria-describedby="tip-d-viz"> Visualization</label>
+                <label class="tax-item"><input type="checkbox" value="d:rep" class="tax-check" aria-describedby="tip-d-rep"> Reporting Results</label>
+                <label class="tax-item"><input type="checkbox" value="d:lbl" class="tax-check" aria-describedby="tip-d-lbl"> Labeling</label>
+                <label class="tax-item"><input type="checkbox" value="d:syn" class="tax-check" aria-describedby="tip-d-syn"> Synthetic Data</label>
+                <label class="tax-item"><input type="checkbox" value="d:anon" class="tax-check" aria-describedby="tip-d-anon"> Anonymization</label>
+                <label class="tax-item"><input type="checkbox" value="d:trans" class="tax-check" aria-describedby="tip-d-trans"> Translation</label>
             </div>
 
             <div class="taxonomy-card">
                 <h3>Visuals</h3>
-                <label class="tax-item"><input type="checkbox" value="v:gen" class="tax-check"> Image Generation</label>
-                <label class="tax-item"><input type="checkbox" value="v:edit" class="tax-check"> Editing</label>
-                <label class="tax-item"><input type="checkbox" value="v:chart" class="tax-check"> Charts/Diagrams</label>
+                <label class="tax-item"><input type="checkbox" value="v:gen" class="tax-check" aria-describedby="tip-v-gen"> Image Generation</label>
+                <label class="tax-item"><input type="checkbox" value="v:edit" class="tax-check" aria-describedby="tip-v-edit"> Editing</label>
+                <label class="tax-item"><input type="checkbox" value="v:chart" class="tax-check" aria-describedby="tip-v-chart"> Charts/Diagrams</label>
             </div>
 
             <div class="taxonomy-card">
                 <h3>Writing & Editing</h3>
-                <label class="tax-item"><input type="checkbox" value="w:draft" class="tax-check"> Drafting</label>
-                <label class="tax-item"><input type="checkbox" value="w:poly" class="tax-check"> Polishing</label>
-                <label class="tax-item"><input type="checkbox" value="w:sum" class="tax-check"> Summarizing</label>
-                <label class="tax-item"><input type="checkbox" value="w:con" class="tax-check"> Connecting Ideas</label>
-                <label class="tax-item"><input type="checkbox" value="w:tone" class="tax-check"> Tone Adjustment</label>
-                <label class="tax-item"><input type="checkbox" value="w:tra" class="tax-check"> Translation</label>
-                <label class="tax-item"><input type="checkbox" value="w:ref" class="tax-check"> References</label>
-                <label class="tax-item"><input type="checkbox" value="w:prs" class="tax-check"> Proofreading</label>
-                <label class="tax-item"><input type="checkbox" value="w:title" class="tax-check"> Title Suggestions</label>
+                <label class="tax-item"><input type="checkbox" value="w:draft" class="tax-check" aria-describedby="tip-w-draft"> Drafting</label>
+                <label class="tax-item"><input type="checkbox" value="w:poly" class="tax-check" aria-describedby="tip-w-poly"> Polishing</label>
+                <label class="tax-item"><input type="checkbox" value="w:sum" class="tax-check" aria-describedby="tip-w-sum"> Summarizing</label>
+                <label class="tax-item"><input type="checkbox" value="w:con" class="tax-check" aria-describedby="tip-w-con"> Conclusions</label>
+                <label class="tax-item"><input type="checkbox" value="w:tone" class="tax-check" aria-describedby="tip-w-tone"> Tone Adjustment</label>
+                <label class="tax-item"><input type="checkbox" value="w:tra" class="tax-check" aria-describedby="tip-w-tra"> Translation</label>
+                <label class="tax-item"><input type="checkbox" value="w:ref" class="tax-check" aria-describedby="tip-w-ref"> References</label>
+                <label class="tax-item"><input type="checkbox" value="w:prs" class="tax-check" aria-describedby="tip-w-prs"> Press & Outreach</label>
+                <label class="tax-item"><input type="checkbox" value="w:title" class="tax-check" aria-describedby="tip-w-title"> Title Suggestions</label>
             </div>
 
             <div class="taxonomy-card">
                 <h3>Ethics</h3>
-                <label class="tax-item"><input type="checkbox" value="e:bias" class="tax-check"> Bias Mitigation</label>
-                <label class="tax-item"><input type="checkbox" value="e:risk" class="tax-check"> Risk Assessment</label>
-                <label class="tax-item"><input type="checkbox" value="e:comp" class="tax-check"> Compliance</label>
-                <label class="tax-item"><input type="checkbox" value="e:conf" class="tax-check"> Conflict of Interest</label>
+                <label class="tax-item"><input type="checkbox" value="e:bias" class="tax-check" aria-describedby="tip-e-bias"> Bias Analysis</label>
+                <label class="tax-item"><input type="checkbox" value="e:risk" class="tax-check" aria-describedby="tip-e-risk"> Risk Assessment</label>
+                <label class="tax-item"><input type="checkbox" value="e:comp" class="tax-check" aria-describedby="tip-e-comp"> Compliance</label>
+                <label class="tax-item"><input type="checkbox" value="e:conf" class="tax-check" aria-describedby="tip-e-conf"> Confidentiality</label>
             </div>
 
             <div class="taxonomy-card">
-                <h3>Critique & Feedback</h3>
-                <label class="tax-item"><input type="checkbox" value="sup:qa" class="tax-check"> Q&A / Querying</label>
-                <label class="tax-item"><input type="checkbox" value="sup:trd" class="tax-check"> Troubleshooting</label>
-                <label class="tax-item"><input type="checkbox" value="sup:lim" class="tax-check"> Identifying Limits</label>
-                <label class="tax-item"><input type="checkbox" value="sup:rec" class="tax-check"> Future Work Recs</label>
-                <label class="tax-item"><input type="checkbox" value="sup:pub" class="tax-check"> Response to Reviewers</label>
+                <h3>Quality Assurance</h3>
+                <label class="tax-item"><input type="checkbox" value="sup:qa" class="tax-check" aria-describedby="tip-sup-qa"> Simulated Peer Review</label>
+                <label class="tax-item"><input type="checkbox" value="sup:trd" class="tax-check" aria-describedby="tip-sup-trd"> Field Trends & Consistency</label>
+                <label class="tax-item"><input type="checkbox" value="sup:lim" class="tax-check" aria-describedby="tip-sup-lim"> Identifying Limits</label>
+                <label class="tax-item"><input type="checkbox" value="sup:rec" class="tax-check" aria-describedby="tip-sup-rec"> Publication Strategy</label>
+                <label class="tax-item"><input type="checkbox" value="sup:pub" class="tax-check" aria-describedby="tip-sup-pub"> Publication Support</label>
             </div>
+        </div>
+
+        <!-- Taxonomy descriptions, verbatim from Appendix A of the aidisclose
+             manual (aidisclose-doc.tex). Referenced by aria-describedby on each
+             checkbox and used as the source for the hover/focus tooltips, so the
+             wording lives in exactly one place. -->
+        <div class="visually-hidden" id="tax-descriptions">
+            <span id="tip-c-idea" data-key="c:idea" data-name="Idea generation">Using AI to brainstorm new research topics, interdisciplinary connections, or novel angles on existing problems.</span>
+            <span id="tip-c-obj" data-key="c:obj" data-name="Defining the research objective">Refining vague goals into concrete, actionable research objectives.</span>
+            <span id="tip-c-rq" data-key="c:rq" data-name="Formulating research questions and hypotheses">Drafting and iterating on specific research questions (RQs) to ensure they are clear and answerable.</span>
+            <span id="tip-c-feas" data-key="c:feas" data-name="Feasibility assessment and risk evaluation">Assessing whether the proposed study is viable regarding resources, time, and data availability.</span>
+            <span id="tip-c-pre" data-key="c:pre" data-name="Hypothesis viability assessment">Conducting quick background checks or “pre-studies” to see if the idea has already been solved.</span>
+            <span id="tip-c-sim" data-key="c:sim" data-name="Simulated debate and argument testing">Using AI to conceptualize theoretical models, simulate persona responses, or design hypothetical scenarios.</span>
+            <span id="tip-l-srch" data-key="l:srch" data-name="Search and Discovery">Using AI tools (e.g., semantic search) to find relevant papers that keyword searches might miss.</span>
+            <span id="tip-l-sum" data-key="l:sum" data-name="Literature summarization and synthesis">Generating summaries or abstracts of long papers to quickly assess relevance.</span>
+            <span id="tip-l-map" data-key="l:map" data-name="Concept Mapping and Systematization">Visualizing connections, citation networks, or thematic clusters in the literature.</span>
+            <span id="tip-l-pat" data-key="l:pat" data-name="Market/patent landscape analysis">Identifying trends or recurring themes across a large corpus of text.</span>
+            <span id="tip-l-gaps" data-key="l:gaps" data-name="Gap Identification and Novelty Evaluation">Using AI to suggest areas where current research is lacking or contradictory.</span>
+            <span id="tip-l-trans" data-key="l:trans" data-name="Cross-lingual literature comprehension">Translating foreign-language literature to make it accessible for the review.</span>
+            <span id="tip-m-des" data-key="m:des" data-name="Experimental Design Optimization">Designing the logic, control groups, and variables of the study.</span>
+            <span id="tip-m-proto" data-key="m:proto" data-name="Development of experimental or research protocols">Creating early drafts of survey instruments, interview guides, or experimental apparatus designs.</span>
+            <span id="tip-m-meth" data-key="m:meth" data-name="Methodological Instrument Selection">Suggesting appropriate statistical methods or qualitative frameworks for the data.</span>
+            <span id="tip-s-gen" data-key="s:gen" data-name="Code Generation">Generating boilerplate code, scripts, or functions from natural language descriptions.</span>
+            <span id="tip-s-opt" data-key="s:opt" data-name="Refactoring and Optimization">Refactoring code for better performance or readability.</span>
+            <span id="tip-s-debug" data-key="s:debug" data-name="Debugging and Repair">Identifying syntax errors or logical bugs in scripts.</span>
+            <span id="tip-s-auto" data-key="s:auto" data-name="Process automation">Writing scripts to automate file management, backups, or batch processing.</span>
+            <span id="tip-s-algs" data-key="s:algs" data-name="Algorithm design">Assisting in the logic and mathematical formulation of algorithms.</span>
+            <span id="tip-s-doc" data-key="s:doc" data-name="Code documentation and comment generation">Generating docstrings, comments, and README files for research software.</span>
+            <span id="tip-d-coll" data-key="d:coll" data-name="Data collection and scraping">Writing scrapers or using AI agents to gather public data.</span>
+            <span id="tip-d-val" data-key="d:val" data-name="Data validation and quality check">Checking data for consistency, outliers, or errors.</span>
+            <span id="tip-d-cln" data-key="d:cln" data-name="Data cleaning and preprocessing">Automating the formatting, parsing, and repair of messy datasets.</span>
+            <span id="tip-d-cur" data-key="d:cur" data-name="Data curation and organization">Organizing and categorizing large datasets.</span>
+            <span id="tip-d-anl" data-key="d:anl" data-name="Data analysis">Suggesting or performing statistical tests and interpreting raw outputs.</span>
+            <span id="tip-d-viz" data-key="d:viz" data-name="Visualization">Generating code for plots, graphs, and data dashboards.</span>
+            <span id="tip-d-rep" data-key="d:rep" data-name="Reproducibility testing">Summarizing data findings in textual or tabular format.</span>
+            <span id="tip-d-lbl" data-key="d:lbl" data-name="Data labeling and annotation assistance">Using LLMs to annotate or classify text/image datasets (zero-shot/few-shot labeling).</span>
+            <span id="tip-d-syn" data-key="d:syn" data-name="Synthetic data generation">Generating synthetic datasets to preserve privacy or augment small samples.</span>
+            <span id="tip-d-anon" data-key="d:anon" data-name="De-identification and anonymization support">Detecting and removing Personally Identifiable Information (PII).</span>
+            <span id="tip-d-trans" data-key="d:trans" data-name="Audio-to-text transcription and diarization">Translating textual data (e.g., survey responses) into the analysis language.</span>
+            <span id="tip-v-gen" data-key="v:gen" data-name="Synthetic Asset Generation">Creating conceptual images, illustrations, or diagrams from scratch.</span>
+            <span id="tip-v-edit" data-key="v:edit" data-name="Image Enhancement and Editing">Enhancing, cropping, or modifying existing images (e.g., removing background).</span>
+            <span id="tip-v-chart" data-key="v:chart" data-name="Diagrammatic and Schematic Design">Creating flowcharts, process diagrams, or high-level infographics.</span>
+            <span id="tip-w-draft" data-key="w:draft" data-name="Drafting Text">Generating initial text for sections based on bullet points or notes.</span>
+            <span id="tip-w-poly" data-key="w:poly" data-name="Polishing and Editing">Correcting grammar, spelling, and punctuation.</span>
+            <span id="tip-w-sum" data-key="w:sum" data-name="Abstract and Executive Summary Generation">Creating the abstract or plain-language summary.</span>
+            <span id="tip-w-con" data-key="w:con" data-name="Formulation of conclusions">Synthesizing the discussion into a final concluding statement.</span>
+            <span id="tip-w-tone" data-key="w:tone" data-name="Tone Adjustment">Rewriting text to be more formal, concise, or accessible.</span>
+            <span id="tip-w-tra" data-key="w:tra" data-name="Translation">Translating the manuscript from the author&#x27;s native language to the publication language.</span>
+            <span id="tip-w-ref" data-key="w:ref" data-name="Citation formatting and bibliography management">Formatting citations and bibliography styles.</span>
+            <span id="tip-w-prs" data-key="w:prs" data-name="Press releases and outreach materials">Drafting slide decks or conference poster text.</span>
+            <span id="tip-w-title" data-key="w:title" data-name="Title Generation">Brainstorming catchy and accurate titles for the work.</span>
+            <span id="tip-e-bias" data-key="e:bias" data-name="Bias analysis and discrimination assessment">Scanning text or study designs for potential cultural or gender bias.</span>
+            <span id="tip-e-risk" data-key="e:risk" data-name="Ethical risk analysis">Identifying potential dual-use concerns or societal risks.</span>
+            <span id="tip-e-comp" data-key="e:comp" data-name="Monitoring compliance with ethical standards">Checking against specific ethical guidelines or checklists.</span>
+            <span id="tip-e-conf" data-key="e:conf" data-name="Data confidentiality monitoring">Ensuring no private data is inadvertently leaked in the text.</span>
+            <span id="tip-sup-qa" data-key="sup:qa" data-name="Simulated Peer Review">Using AI as a reviewer to identify unclear sections or potential critiques.</span>
+            <span id="tip-sup-trd" data-key="sup:trd" data-name="Consistency checking against field trends">Checking the manuscript against current research trends and ensuring internal consistency.</span>
+            <span id="tip-sup-lim" data-key="sup:lim" data-name="Identification of limitations">Identifying weaknesses or limitations in the study that the authors missed.</span>
+            <span id="tip-sup-rec" data-key="sup:rec" data-name="Publication strategy and journal selection">Suggesting suitable journals or conferences and helping with the submission strategy.</span>
+            <span id="tip-sup-pub" data-key="sup:pub" data-name="Publication support">Assisting in drafting cover letters, responses to reviewers, or other publication-related materials.</span>
         </div>
     </div>
 
@@ -641,6 +702,143 @@
             setTimeout(() => btn.innerText = originalText, 2000);
         });
     }
+
+    // --- Taxonomy tooltips ---
+    // Each chip's explanation comes verbatim from Appendix A of the aidisclose
+    // manual and lives once, in #tax-descriptions, which is also what
+    // aria-describedby points at. One shared tooltip element is positioned
+    // per chip. Follows WCAG 1.4.13: dismissible with Escape, stays visible
+    // while the pointer is over it, and never auto-hides on a timer.
+    (function() {
+        const source = document.getElementById('tax-descriptions');
+        const chips = document.querySelectorAll('.tax-item');
+        if (!source || !chips.length) return;
+
+        const tip = document.createElement('div');
+        tip.id = 'tax-tip';
+        tip.setAttribute('role', 'tooltip');
+        document.body.appendChild(tip);
+
+        // Escape dismisses the tooltip for the chip you are on; it must not
+        // disable tooltips generally, so the suppression is scoped to that one
+        // chip and lifted as soon as you leave it.
+        let current = null, hideTimer = null, dismissedFor = null;
+
+        function place(chip) {
+            const c = chip.getBoundingClientRect();
+            const t = tip.getBoundingClientRect();
+            const margin = 8;
+            // Prefer above the chip; drop below when there is no room up there.
+            let top = c.top + window.scrollY - t.height - margin;
+            if (c.top - t.height - margin < 0) top = c.bottom + window.scrollY + margin;
+            // Centre on the chip, then pull back inside the viewport.
+            let left = c.left + window.scrollX + (c.width - t.width) / 2;
+            const min = window.scrollX + margin;
+            const max = window.scrollX + document.documentElement.clientWidth - t.width - margin;
+            left = Math.max(min, Math.min(left, max));
+            tip.style.top = `${Math.round(top)}px`;
+            tip.style.left = `${Math.round(left)}px`;
+        }
+
+        function show(chip) {
+            if (chip === dismissedFor) return;
+            clearTimeout(hideTimer);
+            const box = chip.querySelector('input');
+            const src = box && document.getElementById(box.getAttribute('aria-describedby'));
+            if (!src) return;
+            tip.innerHTML = '';
+            const name = document.createElement('span');
+            name.className = 'tip-name';
+            name.textContent = src.dataset.name || '';
+            const key = document.createElement('span');
+            key.className = 'tip-key';
+            key.textContent = src.dataset.key || '';
+            const body = document.createElement('span');
+            body.textContent = src.textContent;
+            tip.append(name, key, document.createElement('br'), body);
+            current = chip;
+            tip.dataset.open = 'yes';
+            place(chip);
+        }
+
+        function hide(immediate) {
+            clearTimeout(hideTimer);
+            hideTimer = setTimeout(() => {
+                tip.dataset.open = 'no';
+                current = null;
+            }, immediate ? 0 : 120);
+        }
+
+        chips.forEach(chip => {
+            chip.addEventListener('mouseenter', () => show(chip));
+            chip.addEventListener('mouseleave', () => {
+                if (dismissedFor === chip) dismissedFor = null;
+                hide();
+            });
+            // Keyboard users get the same explanation on focus.
+            chip.addEventListener('focusin', () => show(chip));
+            chip.addEventListener('focusout', () => {
+                if (dismissedFor === chip) dismissedFor = null;
+                hide(true);
+            });
+        });
+        // Hoverable: moving onto the tooltip must not dismiss it.
+        tip.addEventListener('mouseenter', () => clearTimeout(hideTimer));
+        tip.addEventListener('mouseleave', () => hide());
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape' && tip.dataset.open === 'yes') {
+                dismissedFor = current;
+                hide(true);
+            }
+        });
+        // On touch there is no mouseleave, so a tapped tooltip would stay put.
+        // Any pointer landing outside a chip or the tooltip closes it.
+        document.addEventListener('pointerdown', e => {
+            if (tip.dataset.open !== 'yes') return;
+            if (e.target.closest('.tax-item') || e.target.closest('#tax-tip')) return;
+            hide(true);
+        }, true);
+        // Reposition rather than leaving the tooltip stranded mid-scroll.
+        window.addEventListener('scroll', () => { if (current) place(current); }, { passive: true });
+        window.addEventListener('resize', () => { if (current) place(current); });
+    })();
+
+    // --- Taxonomy selection tallies ---
+    // Injected rather than hardcoded so the counts can never drift out of step
+    // with the checkboxes actually present in the markup.
+    (function() {
+        const cards = document.querySelectorAll('.taxonomy-card');
+        if (!cards.length) return;
+
+        const sectionTotal = document.createElement('span');
+        sectionTotal.className = 'section-count';
+        const taxHeading = [...document.querySelectorAll('h2')]
+            .find(h => h.textContent.includes('Taxonomy'));
+        if (taxHeading) taxHeading.appendChild(sectionTotal);
+
+        const groups = [...cards].map(card => {
+            const boxes = card.querySelectorAll('.tax-check');
+            const tally = document.createElement('span');
+            tally.className = 'tax-count';
+            card.querySelector('h3').appendChild(tally);
+            return { boxes, tally };
+        });
+
+        function refresh() {
+            let picked = 0, total = 0;
+            for (const g of groups) {
+                const n = [...g.boxes].filter(b => b.checked).length;
+                g.tally.textContent = `${n} / ${g.boxes.length}`;
+                g.tally.dataset.any = n ? 'yes' : 'no';
+                picked += n; total += g.boxes.length;
+            }
+            sectionTotal.textContent = picked ? `${picked} of ${total} selected` : '';
+        }
+
+        document.querySelectorAll('.tax-check').forEach(b => b.addEventListener('change', refresh));
+        refresh();
+    })();
 
     // --- Counter API ---
     // Self-hosted Cloudflare Worker (see DEPLOY-counter.md). GET returns the

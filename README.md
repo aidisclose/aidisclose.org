@@ -58,6 +58,20 @@ immutable for a year.
   when `aidisclose` releases; likewise the taxonomy checkboxes must match the
   keys in `aidisclose.sty` (`\AIDactivate{...}`) and the language dropdown must
   match `langdef/aidisclose-*.ldf`.
+- **Taxonomy labels and tooltips both track the manual.** Chip labels are short
+  paraphrases of the names in `\section{Taxonomy Keys}`; the tooltip text in
+  `#tax-descriptions` is copied verbatim from Appendix A of `aidisclose-doc.tex`
+  and is what `aria-describedby` points at. If the manual's wording changes,
+  both need updating — a label that drifts from its key makes the tool declare
+  something the author did not do.
+- **Two keys are still ambiguous because the manual contradicts itself**, so
+  their labels were left alone pending a decision in the package:
+  - `l:pat` — Taxonomy Keys says "Market/patent landscape analysis", Appendix A
+    says "Pattern recognition". The chip says "Patterns & Themes" (the appendix
+    reading).
+  - `d:rep` — Taxonomy Keys says "Reproducibility testing", Appendix A says
+    "Reporting: summarizing data findings". The chip says "Reporting Results"
+    (the appendix reading).
 - **The CSP still allows `script-src 'unsafe-inline'`.** Two things need it: the
   pre-paint theme script in `<head>` (it has to run synchronously to avoid a
   flash of the wrong mode) and the `onclick` attributes on the buttons. Moving

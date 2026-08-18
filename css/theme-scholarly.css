@@ -1,0 +1,93 @@
+/* ============================================================
+   Theme: Scholarly — warm paper, ink, and oxblood. The register is
+   an academic press page: a display serif for headings, hairline
+   rules instead of boxes, and one saturated accent used sparingly.
+
+   Every pair below is checked against WCAG: body and label text at
+   4.5:1 or better, and control boundaries (inputs, chips) at 3:1 or
+   better, in both modes.
+   ============================================================ */
+
+[data-theme="scholarly"][data-mode="light"] {
+  --font-display: 'Literata', Georgia, 'Times New Roman', serif;
+
+  --bg: #f7f4ee;
+  --toolbar-bg: rgba(247,244,238,.92);
+  --panel: #fffdf9;    --panel-border: #dcd3c3;
+  --subpanel: #f4f0e8; --subpanel-border: #e3dbcc;
+  --radius: 4px; --radius-sm: 3px;
+  --panel-shadow: none; --backdrop: saturate(180%) blur(6px);
+
+  --text: #1f1c17; --heading: #14110d; --muted: #655d50;
+
+  --accent: #7a2e2e; --accent-grad: #7a2e2e;
+  --accent-soft: #f3e8e5; --accent-ink: #6d2727; --accent-ring: rgba(122,46,46,.16);
+  --gold: #8a5f26; --gold-soft: #f6efdf;
+
+  --input-bg: #fffdf9; --input-border: #8b8272;
+
+  /* Primary is the only filled button; the rest are outlined so the eye
+     has one place to land. */
+  --b1-bg: #7a2e2e; --b1-fg: #fffdf9; --b1-shadow: none;
+  --b2-bg: #efeae0; --b2-fg: #4a443a; --b2-border: #d6cdbc;
+  --b3-bg: #f6efdf; --b3-fg: #6b4a12; --b3-border: #e0d2b4; --b3-shadow: none;
+  --b4-bg: #eae4d8; --b4-fg: #4a443a; --b4-border: #d0c6b2; --b4-shadow: none;
+  --danger-bg: #f7e4e0; --danger-fg: #a32c1e; --danger-bg-hover: #f2d5cf;
+
+  --chip-bg: #fffdf9; --chip-fg: #3c362e; --chip-border: #8b8272;
+  --chip-on-bg: #f3e8e5; --chip-on-fg: #6d2727; --chip-on-border: #7a2e2e;
+
+  --code-head-bg: #14110d; --code-head-ink: #d5cdbe;
+  --code-bg: #1c1917; --code-ink: #eae4d8; --code-border: #2b2622;
+
+  --tip-bg: #211d1a; --tip-fg: #ded6c8; --tip-name: #fdf9f2;
+  --tip-key: #e0a99f; --tip-border: #3a332c;
+  --tip-shadow: 0 10px 28px -10px rgba(31,28,23,.5), 0 2px 6px -2px rgba(31,28,23,.3);
+}
+
+[data-theme="scholarly"][data-mode="dark"] {
+  --font-display: 'Literata', Georgia, 'Times New Roman', serif;
+
+  /* Warm near-black rather than neutral grey — the paper tint survives
+     into dark mode, which is what keeps the two feeling like one design. */
+  --bg: #141210;
+  --toolbar-bg: rgba(20,18,16,.92);
+  --panel: #1d1a17;    --panel-border: #38312a;
+  --subpanel: #231f1b; --subpanel-border: #3a332b;
+  --radius: 4px; --radius-sm: 3px;
+  --panel-shadow: none; --backdrop: saturate(180%) blur(6px);
+
+  --text: #e9e3d7; --heading: #f8f4eb; --muted: #a49a88;
+
+  --accent: #cf7d72; --accent-grad: #cf7d72;
+  --accent-soft: #2c201e; --accent-ink: #e6a79f; --accent-ring: rgba(207,125,114,.22);
+  --gold: #d3a45f; --gold-soft: #2a2318;
+
+  --input-bg: #171412; --input-border: #756b5d;
+
+  --b1-bg: #8f3a36; --b1-fg: #fdf7ef; --b1-shadow: none;
+  --b2-bg: #26221e; --b2-fg: #ded7ca; --b2-border: #3d362e;
+  --b3-bg: #2a2318; --b3-fg: #dcb271; --b3-border: #453a26; --b3-shadow: none;
+  --b4-bg: #24201c; --b4-fg: #ded7ca; --b4-border: #3d362e; --b4-shadow: none;
+  --danger-bg: #3a1e1a; --danger-fg: #f0a99f; --danger-bg-hover: #48251f;
+
+  --chip-bg: #1a1714; --chip-fg: #ded7ca; --chip-border: #756b5d;
+  --chip-on-bg: #2c201e; --chip-on-fg: #e6a79f; --chip-on-border: #cf7d72;
+
+  --code-head-bg: #0b0a09; --code-head-ink: #c4bbab;
+  --code-bg: #100e0c; --code-ink: #e9e3d7; --code-border: #241f1b;
+
+  /* Lifted well clear of both the page and the panels, with a 3:1 edge — at
+     #2b2621 the tooltip separated from the page by only 1.25:1 and leaned
+     entirely on its shadow to read as a raised surface. */
+  --tip-bg: #3d372f; --tip-fg: #e5ded1; --tip-name: #fbf7ee;
+  --tip-key: #e6a79f; --tip-border: #756b5d;
+  --tip-shadow: 0 12px 30px -12px rgba(0,0,0,.7), 0 2px 8px -3px rgba(0,0,0,.5);
+}
+
+/* Stillness over motion: an academic page does not bounce. */
+[data-theme="scholarly"] .btn-primary:hover,
+[data-theme="scholarly"] .btn-novathesis:hover,
+[data-theme="scholarly"] .btn-overleaf:hover { transform: none; filter: brightness(1.04); }
+[data-theme="scholarly"] .btn-secondary:hover { transform: none; }
+[data-theme="scholarly"] .mode-toggle:hover { transform: none; }
