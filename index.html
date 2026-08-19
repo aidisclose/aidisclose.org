@@ -325,6 +325,10 @@
             <button type="button" id="overleaf-btn" class="btn-overleaf" onclick="openInOverleaf()">Compile PDF in Overleaf</button>
             <span class="btn-caption">Opens a ready-to-build project online</span>
         </div>
+        <div class="btn-cell">
+            <button type="button" class="btn-docx" onclick="generateWordDoc()">Word Document</button>
+            <span class="btn-caption">A <code>.docx</code> of the declaration, for pasting into a Word thesis</span>
+        </div>
     </div>
 
     <div id="output-area" role="region" aria-label="Generated LaTeX source" tabindex="-1">
@@ -350,6 +354,8 @@
 
 </div>
 
+<script src="js/aid-i18n.js"></script>
+<script src="js/docx.js"></script>
 <script>
     // --- Light/dark toggle ---
     // The initial mode is chosen by the early <head> script (stored pref >
@@ -440,51 +446,77 @@
     }
 
     // --- LaTeX Generation Logic ---
-    function getFormData() {
-        const authors = escapeLatex(document.getElementById('authors').value.trim());
-        const tools = escapeLatex(document.getElementById('tools').value.trim());
+    // Field reads shared by every "Generate" button. Kept free of any
+    // output-format escaping so both the LaTeX path (getFormData) and the
+    // Word-document path (getRawFormData) start from the same raw values.
+    function readRawFields() {
+        const authors = document.getElementById('authors').value.trim();
+        const tools = document.getElementById('tools').value.trim();
 
-        // Options
         const autobib = document.getElementById('opt-autobib').checked;
         const nocite = document.getElementById('opt-nocite').checked;
 
-        // Title Config
-        const titleFull = escapeLatex(document.getElementById('title-full').value.trim());
-        const titleShort = escapeLatex(document.getElementById('title-short').value.trim());
+        const titleFull = document.getElementById('title-full').value.trim();
+        const titleShort = document.getElementById('title-short').value.trim();
         const titleLevel = document.getElementById('title-level').value.trim();
 
-        // Rendering
         // The input's min/max never fires (no <form> => no constraint validation),
         // and ncols=99 makes multicol abort with "Too many columns".
         const cols = parseInt(document.getElementById('render-cols').value, 10);
         const columns = Number.isFinite(cols) ? Math.min(6, Math.max(1, cols)) : 3;
         const renderStar = document.getElementById('render-star').checked;
         const renderLang = document.getElementById('render-lang').value;
-        // A label is a key, not text: escaping it would corrupt \ref lookups
-        // (sec:aid_declaration -> sec:aid\_declaration). Keep only the characters
-        // that are safe unescaped inside a key=value optional argument.
-        const renderLabel = document.getElementById('render-label').value.trim()
-                              .replace(/[^A-Za-z0-9:_.\-]/g, '');
+        const renderLabel = document.getElementById('render-label').value.trim();
 
-        // Comments
         const comments = [];
-        const commentBoxes = document.querySelectorAll('.comment-box');
-        commentBoxes.forEach(box => {
+        document.querySelectorAll('.comment-box').forEach(box => {
             const textarea = box.querySelector('textarea');
             const checkbox = box.querySelector('input[type="checkbox"]');
             if (textarea.value.trim()) {
-                comments.push({
-                    text: escapeLatex(textarea.value.trim()),
-                    starred: checkbox.checked
-                });
+                comments.push({ text: textarea.value.trim(), starred: checkbox.checked });
             }
         });
 
-        // Taxonomy
         const taxonomy = [];
         document.querySelectorAll('.tax-check:checked').forEach(cb => taxonomy.push(cb.value));
 
         return { authors, tools, comments, autobib, nocite, titleFull, titleShort, titleLevel, columns, renderStar, taxonomy, renderLang, renderLabel };
+    }
+
+    function getFormData() {
+        const raw = readRawFields();
+        // A label is a key, not text: escaping it would corrupt \ref lookups
+        // (sec:aid_declaration -> sec:aid\_declaration). Keep only the characters
+        // that are safe unescaped inside a key=value optional argument.
+        return {
+            ...raw,
+            authors: escapeLatex(raw.authors),
+            tools: escapeLatex(raw.tools),
+            titleFull: escapeLatex(raw.titleFull),
+            titleShort: escapeLatex(raw.titleShort),
+            renderLabel: raw.renderLabel.replace(/[^A-Za-z0-9:_.\-]/g, ''),
+            comments: raw.comments.map(c => ({ text: escapeLatex(c.text), starred: c.starred })),
+        };
+    }
+
+    // Plain-text form data for the Word document — no LaTeX escaping, since
+    // the .docx renders the actual disclosure text rather than LaTeX source.
+    function getRawFormData() {
+        return readRawFields();
+    }
+
+    // Walks the taxonomy DOM once, in the same order the checkboxes are laid
+    // out in (which mirrors aidisclose.sty's own 9 groups), so the Word
+    // document's checklist can render every item — checked and unchecked —
+    // the way \AIDrenderDeclaration does, not just the selected ones.
+    function collectTaxonomyGroups() {
+        return [...document.querySelectorAll('.taxonomy-card')].map(card => ({
+            heading: card.querySelector('h3').firstChild.textContent.trim(),
+            items: [...card.querySelectorAll('.tax-check')].map(cb => ({
+                key: cb.value,
+                checked: cb.checked,
+            })),
+        }));
     }
 
     function validate(data, requireAuthors = true) {
@@ -679,6 +711,120 @@
         code += buildConfiguration(data);
 
         displayOutput(code);
+    }
+
+    // --- Word document (.docx) ---
+    // Renders the same content \AIDrenderDeclaration would typeset — title,
+    // preamble sentence, tools sentence, full taxonomy checklist (all 53
+    // items, checked ones marked), and comments — as an actual Word document
+    // rather than LaTeX source. Wording comes from js/aid-i18n.js, extracted
+    // from the aidisclose package's own langdef/*.ldf files, so switching the
+    // Language dropdown changes the .docx text too, matching what the LaTeX
+    // package would print in that language.
+    //
+    // Deliberately omitted: the \footnote citing aidisclose/GAIDeT and the
+    // \label target. Both are LaTeX-compilation artifacts (a bibliography
+    // entry, a cross-reference anchor) with no equivalent in a standalone
+    // .docx, so reproducing them would mean fabricating apparatus that isn't
+    // really there rather than mimicking something real.
+    function aidJoinList(items, and_) {
+        if (items.length === 0) return '';
+        if (items.length === 1) return items[0];
+        if (items.length === 2) return `${items[0]} ${and_} ${items[1]}`;
+        return `${items.slice(0, -1).join(', ')}, ${and_} ${items[items.length - 1]}`;
+    }
+
+    function generateWordDoc() {
+        const data = getRawFormData();
+        // A full declaration reads oddly with no author, same as Standalone/Snippet.
+        if (!validate(data, true)) return;
+
+        const langCode = (data.renderLang && data.renderLang !== 'default') ? data.renderLang : 'en';
+        const t = AID_I18N[langCode] || AID_I18N.en;
+        const { run, para, table, buildDocxBlob, downloadBlob } = AidDocx;
+
+        const authorNames = data.authors.split(',').map(s => s.trim()).filter(Boolean);
+        const multiple = authorNames.length > 1;
+        const authorNoun = multiple ? t.authors : t.author;
+        const authorList = multiple ? aidJoinList(authorNames, t.and) : (authorNames[0] || '');
+        const ackVerb = multiple ? t.acknowledge : t.acknowledges;
+        const acceptVerb = multiple ? t.accept : t.accepts;
+
+        const preamble = t.preamble
+            .split('<author>').join(authorNoun)
+            .split('<AUTHOR-LIST>').join(authorList)
+            .split('<acknowledges>').join(ackVerb)
+            .split('<accept>').join(acceptVerb);
+
+        const toolNames = data.tools.split(',').map(s => s.trim()).filter(Boolean);
+        const toolsSentence = toolNames.length
+            ? `${t.tools_used} ${aidJoinList(toolNames, t.and)}.`
+            : `${t.tools_used} ${t.none_used}`;
+
+        const body = [];
+
+        // Title — skipped for AIDrenderDeclaration* (the "No Title" option).
+        if (!data.renderStar) {
+            const level = (data.titleLevel || '').toLowerCase();
+            const style = level.includes('chapter') ? 'Title'
+                        : level.includes('subsubsection') ? 'Heading3'
+                        : level.includes('subsection') ? 'Heading2'
+                        : 'Heading1';
+            body.push(para(run(data.titleFull || t.title_long), { style }));
+        }
+
+        // Preamble sentence.
+        body.push(para(run(preamble)));
+
+        // Tools sentence.
+        body.push(para([run(t.tools_used + ' ', { bold: true }), run(toolsSentence.slice(t.tools_used.length + 1))]));
+
+        // Taxonomy: every one of the 53 items, grouped exactly as on the page,
+        // checked ones in black, unchecked ones in the package's default
+        // "unused" gray (black!50 ≈ #808080) — same convention as the LaTeX
+        // checklist, just rendered as a borderless table instead of multicols.
+        const GROUP_I18N_KEYS = ['grp_conc', 'grp_lit', 'grp_meth', 'grp_soft', 'grp_data', 'grp_vis', 'grp_write', 'grp_eth', 'grp_sup'];
+        const groups = collectTaxonomyGroups();
+        body.push(para(run(t.pre_taxonomy || 'Activities supported by Generative Artificial Intelligence Tools:', { bold: true }), { spacingBefore: 200 }));
+
+        groups.forEach((group, i) => {
+            const heading = t[GROUP_I18N_KEYS[i]] || group.heading;
+            body.push(para(run(heading, { bold: true }), { spacingBefore: 160, spacingAfter: 60, borderBottom: true, keepNext: true }));
+
+            const cells = group.items.map(item => {
+                const label = t[item.key.replace(':', '_')] || item.key;
+                const box = item.checked ? '☑' : '☐';
+                const color = item.checked ? undefined : '808080';
+                return para(run(`${box} ${label}`, { color }));
+            });
+            const cols = data.columns;
+            const perCol = Math.ceil(cells.length / cols);
+            const rows = [];
+            for (let r = 0; r < perCol; r++) {
+                const row = [];
+                for (let c = 0; c < cols; c++) row.push(cells[c * perCol + r] || null);
+                rows.push(row);
+            }
+            body.push(table(rows, cols));
+        });
+
+        // Comments, numbered unless starred — matching \begin{AIDcomment} vs
+        // \begin{AIDcomment*}. A textarea's internal newlines are collapsed to
+        // spaces, the same way TeX treats them inside one paragraph (only a
+        // *blank* line starts a new paragraph, which these single boxes don't have).
+        if (data.comments.length) {
+            let n = 0;
+            data.comments.forEach(c => {
+                const label = c.starred ? t.comment_star : `${t.comment_label} #${++n}`;
+                const text = c.text.replace(/\s*\n\s*/g, ' ').trim();
+                body.push(para([run(`${label}: `, { bold: true }), run(text)], { spacingBefore: 160 }));
+            });
+        }
+
+        const title = data.titleFull || t.title_long;
+        const blob = buildDocxBlob(body.join(''), title);
+        incrementGlobalCounter();
+        downloadBlob(blob, 'generative-ai-disclosure.docx');
     }
 
     function displayOutput(code) {

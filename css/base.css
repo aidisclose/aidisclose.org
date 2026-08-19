@@ -238,17 +238,16 @@ input:focus, textarea:focus, select:focus {
 button { padding: 12px 24px; border: 1px solid transparent; border-radius: var(--radius-sm); font: inherit; font-weight: 600; font-size: 1rem; cursor: pointer; transition: transform .15s ease, filter .2s ease, background-color .2s ease; }
 button a { color: inherit; text-decoration: none; }
 
-/* Grid, not flex: four equal cells that reflow to 2 and then 1 column. As a
-   nowrap flex row the four buttons needed 507px and overflowed a 375px phone,
-   pushing NOVAthesis and Overleaf off-screen. */
-.button-group { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; align-items: stretch; }
+/* auto-fit rather than a fixed column count: cells reflow on their own as
+   the button count changes or the viewport narrows, with no breakpoint to
+   maintain. A fixed repeat(4, 1fr) previously needed a hand-tuned breakpoint
+   per screen width, and silently overflowed at 375px until one was added. */
+.button-group { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 20px; align-items: stretch; }
 .btn-cell { display: flex; flex-direction: column; min-width: 0; }
 .btn-cell > button {
   width: 100%; box-sizing: border-box; min-height: 60px; padding: 8px 16px; line-height: 1.2;
   text-align: center; display: flex; align-items: center; justify-content: center;
 }
-@media (max-width: 760px) { .button-group { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 400px) { .button-group { grid-template-columns: 1fr; } }
 @media (max-width: 600px) {
   .card { padding: 24px 18px 26px; }
   /* Give the heading the full width — sharing the line with the tally was
@@ -263,8 +262,9 @@ button a { color: inherit; text-decoration: none; }
 .btn-secondary  { background: var(--b2-bg); color: var(--b2-fg); border-color: var(--b2-border); }
 .btn-novathesis { background: var(--b3-bg); color: var(--b3-fg); border-color: var(--b3-border); box-shadow: var(--b3-shadow); }
 .btn-overleaf   { background: var(--b4-bg); color: var(--b4-fg); border-color: var(--b4-border); box-shadow: var(--b4-shadow); }
+.btn-docx       { background: var(--b5-bg); color: var(--b5-fg); border-color: var(--b5-border); box-shadow: var(--b5-shadow); }
 
-.btn-primary:hover, .btn-novathesis:hover, .btn-overleaf:hover { transform: translateY(-2px); filter: brightness(1.06); }
+.btn-primary:hover, .btn-novathesis:hover, .btn-overleaf:hover, .btn-docx:hover { transform: translateY(-2px); filter: brightness(1.06); }
 .btn-secondary:hover { transform: translateY(-2px); border-color: var(--accent); }
 
 /* The primary action carries a touch more weight than the alternatives. */

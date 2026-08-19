@@ -27,11 +27,15 @@
   --input-bg: #fffdf9; --input-border: #8b8272;
 
   /* Primary is the only filled button; the rest are outlined so the eye
-     has one place to land. */
+     has one place to land. NOVAthesis uses that project's own brand red
+     (its site's --accent-700, #9c2a17); Overleaf uses their well-known
+     green — both distinct in hue from the oxblood primary and from each
+     other, so five buttons in a row stay easy to tell apart at a glance. */
   --b1-bg: #7a2e2e; --b1-fg: #fffdf9; --b1-shadow: none;
   --b2-bg: #efeae0; --b2-fg: #4a443a; --b2-border: #d6cdbc;
-  --b3-bg: #f6efdf; --b3-fg: #6b4a12; --b3-border: #e0d2b4; --b3-shadow: none;
-  --b4-bg: #eae4d8; --b4-fg: #4a443a; --b4-border: #d0c6b2; --b4-shadow: none;
+  --b3-bg: #f7e6e1; --b3-fg: #9c2a17; --b3-border: #ecd0c3; --b3-shadow: none;
+  --b4-bg: #e5f2e6; --b4-fg: #146627; --b4-border: #cfe4d1; --b4-shadow: none;
+  --b5-bg: #e7ecf7; --b5-fg: #2a3a63; --b5-border: #c7d2ea; --b5-shadow: none;
   --danger-bg: #f7e4e0; --danger-fg: #a32c1e; --danger-bg-hover: #f2d5cf;
 
   --chip-bg: #fffdf9; --chip-fg: #3c362e; --chip-border: #8b8272;
@@ -67,8 +71,9 @@
 
   --b1-bg: #8f3a36; --b1-fg: #fdf7ef; --b1-shadow: none;
   --b2-bg: #26221e; --b2-fg: #ded7ca; --b2-border: #3d362e;
-  --b3-bg: #2a2318; --b3-fg: #dcb271; --b3-border: #453a26; --b3-shadow: none;
-  --b4-bg: #24201c; --b4-fg: #ded7ca; --b4-border: #3d362e; --b4-shadow: none;
+  --b3-bg: #35190f; --b3-fg: #e8806c; --b3-border: #4a2c1e; --b3-shadow: none;
+  --b4-bg: #12301c; --b4-fg: #7fd89b; --b4-border: #234a30; --b4-shadow: none;
+  --b5-bg: #1c2338; --b5-fg: #a9bbe8; --b5-border: #33406b; --b5-shadow: none;
   --danger-bg: #3a1e1a; --danger-fg: #f0a99f; --danger-bg-hover: #48251f;
 
   --chip-bg: #1a1714; --chip-fg: #ded7ca; --chip-border: #756b5d;
@@ -88,6 +93,7 @@
 /* Stillness over motion: an academic page does not bounce. */
 [data-theme="scholarly"] .btn-primary:hover,
 [data-theme="scholarly"] .btn-novathesis:hover,
-[data-theme="scholarly"] .btn-overleaf:hover { transform: none; filter: brightness(1.04); }
+[data-theme="scholarly"] .btn-overleaf:hover,
+[data-theme="scholarly"] .btn-docx:hover { transform: none; filter: brightness(1.04); }
 [data-theme="scholarly"] .btn-secondary:hover { transform: none; }
 [data-theme="scholarly"] .mode-toggle:hover { transform: none; }

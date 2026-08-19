@@ -64,6 +64,12 @@ immutable for a year.
   and is what `aria-describedby` points at. If the manual's wording changes,
   both need updating — a label that drifts from its key makes the tool declare
   something the author did not do.
+- **The Word-document button renders text, not LaTeX, so it needs its own
+  translated strings.** `js/aid-i18n.js` is extracted from the aidisclose
+  package's `langdef/*.ldf` files (the same source the LaTeX macros read from)
+  and covers all 14 languages in the dropdown. If the package adds a language
+  or changes its wording, re-run the extraction (the recipe is documented at
+  the top of that file) rather than hand-editing the generated JSON.
 - **Two keys are still ambiguous because the manual contradicts itself**, so
   their labels were left alone pending a decision in the package:
   - `l:pat` — Taxonomy Keys says "Market/patent landscape analysis", Appendix A
