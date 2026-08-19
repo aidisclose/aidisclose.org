@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="scholarly" data-mode="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About — AIdisclose</title>
+    <meta name="description" content="What the AIdisclose generator produces, how its taxonomy extends GAIDeT, and what each of the five output-format buttons is for.">
+    <link rel="canonical" href="https://aidisclose.org/about.html">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <meta name="theme-color" content="#f4f6f9" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0e0e0e" media="(prefers-color-scheme: dark)">
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIdisclose">
+    <meta property="og:url" content="https://aidisclose.org/about.html">
+    <meta property="og:title" content="About AIdisclose">
+    <meta property="og:description" content="What the generator produces, how its taxonomy extends GAIDeT, and what each output format is for.">
+    <meta property="og:image" content="https://aidisclose.org/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="AIdisclose — Generative AI Disclosure Generator">
+    <meta name="twitter:card" content="summary_large_image">
+    <script>
+        // Same anti-flash logic as index.html: stored preference > OS preference > local time.
+        (function() {
+            var root = document.documentElement;
+            root.setAttribute('data-theme', 'scholarly');
+            function preferred() {
+                try { var s = localStorage.getItem('aid_mode'); if (s) return s; } catch (e) {}
+                if (window.matchMedia) {
+                    if (matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
+                    if (matchMedia('(prefers-color-scheme: light)').matches) return 'light';
+                }
+                var h = new Date().getHours();
+                return (h >= 19 || h < 7) ? 'dark' : 'light';
+            }
+            root.setAttribute('data-mode', preferred());
+        })();
+    </script>
+    <link rel="preload" href="fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="fonts/literata-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="css/fonts.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/theme-scholarly.css">
+    <style>
+        /* Small additions specific to this page — kept here rather than in
+           base.css since nothing else on the site needs them. */
+        .format-card {
+            background: var(--subpanel); border: 1px solid var(--subpanel-border);
+            border-left: 3px solid var(--rule-color, var(--accent));
+            border-radius: var(--radius-sm); padding: 16px 20px; margin-bottom: 14px;
+        }
+        .format-card h3 { margin: 0 0 6px; font-size: 1.02rem; color: var(--heading); }
+        .format-card p { margin: 0; color: var(--text); line-height: 1.6; font-size: .93rem; }
+        .cat-list {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 8px 20px; margin: 18px 0 0; padding: 0; list-style: none;
+        }
+        .cat-list li {
+            display: flex; justify-content: space-between; gap: 10px;
+            padding: 7px 0; border-bottom: 1px solid var(--panel-border); font-size: .92rem;
+        }
+        .cat-list .n { color: var(--muted); font-variant-numeric: tabular-nums; flex: none; }
+        .back-link {
+            display: inline-block; margin-top: 40px; color: var(--accent-ink);
+            font-weight: 600; text-decoration: none;
+        }
+        .back-link:hover { text-decoration: underline; }
+        .toolbar .brand-link { text-decoration: none; }
+        .toolbar nav a {
+            color: var(--muted); font-size: .85rem; font-weight: 600; text-decoration: none;
+            margin-right: 4px;
+        }
+        .toolbar nav a:hover { color: var(--accent-ink); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="toolbar">
+        <a class="brand-link" href="index.html"><span class="brand">AI<span>disclose</span></span></a>
+        <span class="spacer"></span>
+        <nav><a href="index.html">← Generator</a></nav>
+        <button type="button" class="mode-toggle" onclick="toggleMode()" aria-pressed="false"><span id="mode-icon" aria-hidden="true">🌙</span> <span id="mode-label">Dark</span></button>
+    </div>
+
+    <header>
+        <h1>About AIdisclose</h1>
+        <p class="subtitle">
+            What the generator produces, where its taxonomy comes from, and what each
+            output format is for.
+        </p>
+    </header>
+
+    <div class="card">
+        <h2>What this generates</h2>
+        <p>
+            AIdisclose helps you write a clear, structured statement about how generative
+            AI contributed to a piece of academic work — a thesis, a paper, a report.
+            Rather than a vague one-line disclaimer ("AI was used to assist with this
+            work"), you pick the specific tasks AI helped with from a fixed taxonomy, name
+            the tools involved, add free-text comments where the checklist doesn't cover
+            the detail, and the generator writes the resulting declaration for you — ready
+            to drop into whichever document you're already working in.
+        </p>
+        <p style="margin-top:14px">
+            It is built around the <a href="https://github.com/joaomlourenco/aidisclose" target="_blank" rel="noopener"><code>aidisclose</code></a>
+            LaTeX package: the generator's taxonomy, checklist rendering, and disclosure
+            wording all come directly from that package, in every language it supports —
+            the generator is a form in front of it, not a separate reimplementation.
+        </p>
+    </div>
+
+    <div class="card">
+        <h2>The taxonomy: extending GAIDeT</h2>
+        <p>
+            The checklist on the generator page isn't ad hoc. It organizes 53 specific
+            tasks into 9 categories, covering the arc of a research project from early
+            idea generation through to publication support. It is built as an extension
+            of <strong>GAIDeT</strong> (the Generative AI Delegation Taxonomy) proposed by
+            Suchikova, Tsybuliak, Teixeira da Silva &amp; Nazarovets (2025) in
+            <em>Accountability in Research</em>
+            (<a href="https://doi.org/10.1080/08989621.2025.2544331" target="_blank" rel="noopener">doi:10.1080/08989621.2025.2544331</a>) —
+            a structured vocabulary for describing which parts of a research process were
+            delegated to generative AI, so that a disclosure says something specific and
+            comparable across papers, rather than a blanket "AI was used".
+        </p>
+        <p style="margin-top:14px">
+            <code>aidisclose</code> keeps GAIDeT's phase-based structure and extends it
+            with additional categories and finer-grained tasks — 53 in total, grouped as:
+        </p>
+        <ul class="cat-list">
+            <li>Conceptualization <span class="n">6 tasks</span></li>
+            <li>Literature Review <span class="n">6 tasks</span></li>
+            <li>Methodology <span class="n">3 tasks</span></li>
+            <li>Software Development &amp; Automation <span class="n">6 tasks</span></li>
+            <li>Data Management <span class="n">11 tasks</span></li>
+            <li>Visuals &amp; Multimedia <span class="n">3 tasks</span></li>
+            <li>Writing &amp; Editing <span class="n">9 tasks</span></li>
+            <li>Ethics Review <span class="n">4 tasks</span></li>
+            <li>Quality Assurance <span class="n">5 tasks</span></li>
+        </ul>
+        <p style="margin-top:16px">
+            On the generator page, hovering or focusing any checklist item shows its full
+            definition — the short label on the chip is a paraphrase; the tooltip is the
+            definition the disclosure text is actually built from.
+        </p>
+    </div>
+
+    <div class="card">
+        <h2>Choose your output format</h2>
+        <p class="help-text" style="margin-bottom:20px">
+            Fill in the form once — authors, tools, taxonomy, comments — then pick
+            whichever of these five buttons matches how you're writing. All five read the
+            same form; they differ only in what they hand you.
+        </p>
+
+        <div class="format-card" style="--rule-color: var(--b1-bg)">
+            <h3>Standalone Document</h3>
+            <p>
+                A complete, ready-to-compile <code>.tex</code> file: <code>\documentclass</code>,
+                the <code>aidisclose</code> package, and the rendered declaration, all in one
+                file. Good for a quick preview of what your selections produce, for a
+                disclosure that stands on its own rather than as part of a larger document,
+                or as a template to copy commands out of.
+            </p>
+        </div>
+
+        <div class="format-card" style="--rule-color: var(--panel-border)">
+            <h3>Snippet</h3>
+            <p>
+                Just the package import, the configuration commands
+                (<code>\AIDactivate</code>, <code>\AIDtoolsUsed</code>, your comments), and
+                the <code>\AIDrenderDeclaration</code> call — no <code>\documentclass</code>
+                or <code>\begin{document}</code>. Paste the preamble line into your
+                preamble and the rest wherever the declaration should appear in a LaTeX
+                document you already have.
+            </p>
+        </div>
+
+        <div class="format-card" style="--rule-color: var(--b3-fg)">
+            <h3>NOVAthesis</h3>
+            <p>
+                Just the configuration body, meant to replace the contents of
+                <code>7_aidisclose.tex</code> in the
+                <a href="https://github.com/joaomlourenco/novathesis" target="_blank" rel="noopener">NOVAthesis</a>
+                thesis template — which already imports the package and calls the
+                rendering command for you. If your thesis is built on NOVAthesis, this is
+                the button to use; the other two LaTeX buttons would duplicate what the
+                template already does.
+            </p>
+        </div>
+
+        <div class="format-card" style="--rule-color: var(--b4-fg)">
+            <h3>Compile PDF in Overleaf</h3>
+            <p>
+                Opens a new Overleaf project containing the full standalone document, plus
+                the <code>aidisclose</code> package's own source files, fetched live from
+                its GitHub repository at the moment you click — so it compiles
+                immediately, even though the package isn't on CTAN yet and Overleaf
+                doesn't have it pre-installed. No local LaTeX install needed; you get a PDF
+                preview in your browser within seconds.
+            </p>
+        </div>
+
+        <div class="format-card" style="--rule-color: var(--b5-fg)">
+            <h3>Word Document</h3>
+            <p>
+                For anyone not writing in LaTeX at all. Builds an actual <code>.docx</code>
+                file — title, declaration text, the full 53-item checklist with your
+                selections marked, and your comments — entirely inside your browser;
+                nothing is uploaded anywhere. The wording matches whichever language you
+                picked in the Language dropdown, the same way the LaTeX package would
+                render it in that language.
+            </p>
+        </div>
+    </div>
+
+    <a class="back-link" href="index.html">← Back to the generator</a>
+
+</div>
+
+<script>
+    // Identical to index.html's toggle logic, duplicated because this is a
+    // second static page rather than part of a single-page app.
+    (function() {
+        const root = document.documentElement;
+        function syncLabel(m) {
+            const icon = document.getElementById('mode-icon');
+            const label = document.getElementById('mode-label');
+            const btn = document.querySelector('.mode-toggle');
+            if (icon) icon.textContent = m === 'dark' ? '☀' : '🌙';
+            if (label) label.textContent = m === 'dark' ? 'Light' : 'Dark';
+            if (btn) btn.setAttribute('aria-pressed', m === 'dark' ? 'true' : 'false');
+        }
+        function setMode(m, silent) {
+            root.setAttribute('data-mode', m);
+            syncLabel(m);
+            if (!silent) { try { localStorage.setItem('aid_mode', m); } catch (e) {} }
+        }
+        window.toggleMode = function() {
+            setMode(root.getAttribute('data-mode') === 'dark' ? 'light' : 'dark');
+        };
+        syncLabel(root.getAttribute('data-mode'));
+        if (window.matchMedia) {
+            matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+                let stored = null;
+                try { stored = localStorage.getItem('aid_mode'); } catch (_) {}
+                if (!stored) setMode(e.matches ? 'dark' : 'light', true);
+            });
+        }
+    })();
+</script>
+
+</body>
+</html>

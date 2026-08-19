@@ -7,6 +7,12 @@
    ============================================================ */
 
 * { box-sizing: border-box; }
+/* Every other link on the site already gets a scoped accent-ink override
+   (.subtitle a, .btn-caption a, .footer-sponsor a, ...); this is the
+   fallback for plain body-text links, like the ones in about.html, so they
+   don't fall back to the browser's default blue against this palette. */
+a { color: var(--accent-ink); }
+a:hover { color: var(--accent); }
 /* Visible to assistive tech only — used for status announcements. */
 .visually-hidden {
   position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
@@ -73,6 +79,18 @@ header::after {
 }
 .subtitle a { text-decoration: none; }
 .subtitle a code { text-decoration: underline; text-underline-offset: 2px; }
+
+/* Secondary nav into about.html — a ghost pill rather than a filled one, so
+   it reads as "more info" and doesn't compete with the five format buttons
+   below for the eye's attention. */
+.about-link {
+  display: inline-block; margin-top: 18px; padding: 7px 16px;
+  border: 1px solid var(--panel-border); border-radius: 999px;
+  color: var(--accent-ink); font-size: .85rem; font-weight: 600;
+  text-decoration: none; transition: border-color .15s ease, background-color .15s ease;
+}
+.about-link:hover { border-color: var(--accent); background: var(--accent-soft); }
+.about-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 /* --- Cards & sections --- */
 .card {
