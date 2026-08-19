@@ -23,3 +23,15 @@
 # Fonts are content-hashed by Google and never change under a given filename.
 /fonts/*
   Cache-Control: public, max-age=31536000, immutable
+
+# CSS and JS are neither hashed nor versioned, so Cloudflare Pages' default of
+# 4 hours (max-age=14400) meant a deploy could sit invisible in a returning
+# visitor's browser for hours — the HTML page itself already revalidates on
+# every load (max-age=0 below), but a linked stylesheet or script did not,
+# so a deploy could change colours/behaviour on the server while browsers
+# kept rendering the previous file. no-cache still lets the browser reuse the
+# cached bytes on a 304, it just requires asking first.
+/css/*
+  Cache-Control: no-cache
+/js/*
+  Cache-Control: no-cache
